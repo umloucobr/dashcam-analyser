@@ -12,6 +12,8 @@ namespace dashan {
 		extern const float scoreThreshold;
 		extern const float NMSThreshold;
 		extern const float confidenceThreshold;
+		extern const float inputHeight;
+		extern const float inputWidth;
 	}
 
 	struct Detection
@@ -20,6 +22,8 @@ namespace dashan {
 		float confidence;
 		cv::Rect box;
 	};
+
+	void configureNet(cv::dnn::Net& net, bool isCuda);
 
 	cv::Mat formatYolov5(const cv::Mat& source);
 

@@ -2,19 +2,28 @@
 
 namespace dashan {
     namespace constants {
-        extern const float scoreThreshold {0.2};
-        extern const float NMSThreshold {0.45};
-        extern const float confidenceThreshold {0.45};
+        extern const float scoreThreshold {0.2f};
+        extern const float NMSThreshold {0.45f};
+        extern const float confidenceThreshold {0.45f};
+		extern const float inputHeight {640.0};
+		extern const float inputWidth {640.0};
     }
-	//Part of this code comes from learnopencv.com but I have changed it to match good C++ practices.
+	void configureNet(cv::dnn::Net& net, bool isCuda) {
+		if (isCuda)
+		{
+			net.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
+			net.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA_FP16);
+		}
+	}
+	//Part of this code comes from https://github.com/doleron/yolov5-opencv-cpp-python but I have changed it to match good C++ practices.
 
 	//Put the image in a big enough square (Resize to the biggest member).
     cv::Mat formatYolov5(const cv::Mat& source) {
 		int col {source.cols};
         int row {source.rows};
-        int biggest = std::max(col, row);
+		int biggest {std::max(col, row)};
 
-        cv::Mat resized = cv::Mat::zeros(biggest, biggest, CV_8UC3);
+		cv::Mat resized{cv::Mat::zeros(biggest, biggest, CV_8UC3)};
         source.copyTo(resized(cv::Rect(0, 0, col, row)));
 
         return resized;
@@ -25,16 +34,16 @@ namespace dashan {
 
 		auto inputImage {formatYolov5(image)};
 
-		cv::dnn::blobFromImage(inputImage, blob, 1. / 255., cv::Size(640, 640), cv::Scalar(), true, false);
+		cv::dnn::blobFromImage(inputImage, blob, 1. / 255., cv::Size(dashan::constants::inputHeight, dashan::constants::inputWidth), cv::Scalar(), true, false);
 
 		net.setInput(blob);
 		std::vector<cv::Mat> outputs;
 		net.forward(outputs, net.getUnconnectedOutLayersNames());
 
-		//This makes the boxes match the resolutionof the input image.
+		//This makes the boxes match the resolution of the input image.
 
-		float xFactor {inputImage.cols / 640.0f};
-		float yFactor {inputImage.rows / 640.0f};
+		float xFactor {inputImage.cols / dashan::constants::inputHeight};
+		float yFactor {inputImage.rows / dashan::constants::inputWidth};
 
 		float* data {reinterpret_cast<float*>(outputs[0].data)};
 
@@ -45,14 +54,13 @@ namespace dashan {
 		std::vector<float> confidences;
 		std::vector<cv::Rect> boxes;
 
-		for (int i = 0; i < rows; ++i) {
-
+		for (int i = 0; i <= rows; ++i) {
 			float confidence {data[4]};
 			if (confidence >= dashan::constants::confidenceThreshold) {
 
 				float* classesScores {data + 5};
 
-				cv::Mat scores(1, className.size(), CV_32FC1, classesScores);
+				cv::Mat scores (1, className.size(), CV_32FC1, classesScores);
 				cv::Point classId;
 				double maxClassScore;
 
