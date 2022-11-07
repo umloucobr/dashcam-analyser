@@ -14,18 +14,16 @@ int main(int argc, char* argv[])
         classList.push_back(line);
     }
 
-    //cv::Mat image {cv::imread("car.jpg")};
-    //cv::imshow("Dashcam Analyser 2", image);
-
     cv::VideoCapture video {argv[1]};
 
     if (!video.isOpened())
     {
-        std::cerr << "Error when opening the video" << std::endl;
+        std::cerr << "Error when opening the video." << std::endl;
         return -1;
     }
 
-    auto net = cv::dnn::readNet("yolov5n.onnx");
+    auto net = cv::dnn::readNet("yolov5s.onnx");
+    dashan::configureNet(net, true);
 
     cv::Mat frame;
    
@@ -44,12 +42,11 @@ int main(int argc, char* argv[])
 
         for (int i = 0; i < detections; ++i)
         {
-
             auto detection {output[i]};
             auto box {detection.box};
             auto classId {detection.classId};
-            cv::rectangle(frame, box, cv::Scalar(0, 0, 255), 3);
 
+            cv::rectangle(frame, box, cv::Scalar(0, 0, 255), 3);
             cv::rectangle(frame, cv::Point(box.x, box.y - 20), cv::Point(box.x + box.width, box.y), cv::Scalar(0, 0, 255), cv::FILLED);
             cv::putText(frame, classList[classId].c_str(), cv::Point(box.x, box.y - 5), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0));
         }
