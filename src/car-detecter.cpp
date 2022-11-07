@@ -15,8 +15,7 @@ namespace dashan {
 			net.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA_FP16);
 		}
 	}
-
-	//Part of this code comes from learnopencv.com but I have changed it to match good C++ practices.
+	//Part of this code comes from https://github.com/doleron/yolov5-opencv-cpp-python but I have changed it to match good C++ practices.
 
 	//Put the image in a big enough square (Resize to the biggest member).
     cv::Mat formatYolov5(const cv::Mat& source) {
