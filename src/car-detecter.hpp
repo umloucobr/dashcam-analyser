@@ -1,12 +1,7 @@
 #pragma once
 #ifndef CAR_DETECTOR_H
 #define CAR_DETECTOR_H
-#include <opencv2/opencv.hpp>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <format>
-#include <fstream>
+#include "dashcam-analyser.hpp"
 namespace dashan {
 	namespace constants {
 		extern const float scoreThreshold;

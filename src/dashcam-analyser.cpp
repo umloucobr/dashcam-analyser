@@ -3,8 +3,8 @@
 
 int main(int argc, char* argv[])
 {
-    cv::String pathToVideo;
-    bool useCuda {false};
+    cv::String pathToVideo {"d.mp4"};
+    bool useCuda {true};
 
 	cv::namedWindow("Dashcam Analyser", cv::WINDOW_AUTOSIZE);
 	cv::namedWindow("Dashcam Analyser 2", cv::WINDOW_AUTOSIZE);
@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    auto net = cv::dnn::readNet("yolov5s.onnx");
+    auto net = cv::dnn::readNet("yolov5x6.onnx");
     dashan::configureNet(net, useCuda);
 
     cv::Mat frame;
@@ -72,6 +72,7 @@ int main(int argc, char* argv[])
             auto detection {output[i]};
             auto box {detection.box};
             auto classId {detection.classId};
+            auto confidence {detection.confidence};
 
             cv::rectangle(frame, box, cv::Scalar(0, 0, 255), 3);
             cv::rectangle(frame, cv::Point(box.x, box.y - 20), cv::Point(box.x + box.width, box.y), cv::Scalar(0, 0, 255), cv::FILLED);
