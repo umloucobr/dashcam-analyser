@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
         }
 
         dashan::objectDetector(frame, net, classList);
-        dashan::laneDetector(frame);
+        dashan::laneDetector(frame, true);
         cv::imshow("Dashcam Analyser 2", frame);
 
         if (static_cast<int>(cv::waitKey(33)) == 27) {

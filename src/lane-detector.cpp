@@ -8,7 +8,7 @@ namespace dashan {
 		extern const cv::Mat upperWhiteThreshold {180, 50, 255};
 	}
 	
-	cv::Mat laneDetector(cv::Mat& input) {
+	cv::Mat laneDetector(cv::Mat& input, bool drawContours) {
 		cv::Mat roiImage;
 		cv::Mat imageHsv;
 		cv::Mat imageGray;
@@ -56,6 +56,18 @@ namespace dashan {
 		for (size_t i = 0; i < lines.size(); i++) {
 			cv::line(input, cv::Point(lines[i][0], lines[i][1]),
 			cv::Point(lines[i][2], lines[i][3]), cv::Scalar(0, 0, 255), 3, 8);
+		}
+
+		if (drawContours) {
+			std::vector<std::vector<cv::Point> > contours;
+			std::vector<cv::Vec4i> hierarchy;
+			findContours(canny, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+
+			for (size_t i = 0; i < contours.size(); i++)
+			{
+				cv::Scalar color = cv::Scalar(0, 0, 255);
+				cv::drawContours(input, contours, (int)i, color, 2, cv::LINE_8, hierarchy, 0);
+			}
 		}
 		return input;
 	}

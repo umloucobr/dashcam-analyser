@@ -10,7 +10,7 @@ namespace dashan {
 		extern const cv::Mat upperWhiteThreshold;
 	}
 
-	cv::Mat laneDetector (cv::Mat& input);
+	cv::Mat laneDetector (cv::Mat& input, bool drawContours);
 }
 #endif
 
