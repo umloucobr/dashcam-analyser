@@ -22,7 +22,7 @@ namespace dashan {
 
 	cv::Mat formatYolov5(const cv::Mat& source);
 
-	void detect(cv::Mat& image, cv::dnn::Net& net, std::vector<Detection>& output, const std::vector<std::string>& className);
+	cv::Mat objectDetector(cv::Mat& image, cv::dnn::Net& net, const std::vector<std::string>& className);
 }
 #endif
 

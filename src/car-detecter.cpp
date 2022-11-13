@@ -29,8 +29,9 @@ namespace dashan {
         return resized;
     }
 
-	void detect(cv::Mat& image, cv::dnn::Net& net, std::vector<Detection>& output, const std::vector<std::string>& className) {
+	cv::Mat objectDetector(cv::Mat& image, cv::dnn::Net& net, const std::vector<std::string>& classList) {
 		cv::Mat blob;
+		std::vector<Detection> output;
 
 		auto inputImage {formatYolov5(image)};
 
@@ -60,7 +61,7 @@ namespace dashan {
 
 				float* classesScores {data + 5};
 
-				cv::Mat scores (1, className.size(), CV_32FC1, classesScores);
+				cv::Mat scores (1, classList.size(), CV_32FC1, classesScores);
 				cv::Point classId;
 				double maxClassScore;
 
@@ -96,5 +97,19 @@ namespace dashan {
 			result.box = boxes[idx];
 			output.push_back(result);
 		}
+
+		int detections = output.size();
+
+		for (int i = 0; i < detections; ++i) {
+			auto detection{ output[i] };
+			auto box{ detection.box };
+			auto classId{ detection.classId };
+			auto confidence{ detection.confidence };
+
+			cv::rectangle(image, box, cv::Scalar(0, 0, 255), 3);
+			cv::rectangle(image, cv::Point(box.x, box.y - 20), cv::Point(box.x + box.width, box.y), cv::Scalar(0, 0, 255), cv::FILLED);
+			cv::putText(image, classList[classId].c_str(), cv::Point(box.x, box.y - 5), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0));
+		}
+		return image;
 	}
 }
