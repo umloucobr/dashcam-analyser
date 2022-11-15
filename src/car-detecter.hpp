@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CAR_DETECTOR_H
-#define CAR_DETECTOR_H
+#ifndef CAR_DETECTOR_HPP
+#define CAR_DETECTOR_HPP
 #include "dashcam-analyser.hpp"
 namespace dashan {
 	namespace constants {
